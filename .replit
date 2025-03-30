@@ -1,0 +1,51 @@
+modules = ["swift"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "RoutineReminder iOS Simulator"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "ios_app_viewer"
+
+[[workflows.workflow]]
+name = "RoutineReminder iOS Simulator"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd RoutineReminder && swift main.swift"
+
+[[workflows.workflow]]
+name = "ios_app_viewer"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "open RoutineReminder/RoutineReminder.xcodeproj"
+
+[deployment]
+run = ["sh", "-c", "cd RoutineReminder && swift main.swift"]
